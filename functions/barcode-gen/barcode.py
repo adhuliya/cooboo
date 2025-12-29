@@ -60,9 +60,9 @@ def read_barcodes(csv_file, repeat=1):
     return items
 
 
-def create_pdf(barcode_items):
+def create_pdf(barcode_items, pdf_file=OUTPUT_PDF):
     font_name = try_register_arial()
-    c = canvas.Canvas(OUTPUT_PDF, pagesize=A4)
+    c = canvas.Canvas(pdf_file, pagesize=A4)
 
     cols, cell_width = decide_columns()
     x_positions = [
@@ -111,16 +111,29 @@ def create_pdf(barcode_items):
             y -= (BARCODE_HEIGHT + 40 + VERT_SPACE)
 
     c.save()
-    print(f"PDF created: {OUTPUT_PDF}")
+    print(f"PDF created: {pdf_file}")
 
-
-if __name__ == "__main__":
-    if not os.path.exists(CSV_FILE):
-        print(f"CSV file not found: {CSV_FILE}")
+def gen_barcode_and_pdf(csv_file=CSV_FILE, pdf_file=OUTPUT_PDF, repeat=1):
+    """
+    This function reads the CSV file, generates the barcodes and creates the PDF.
+    The CSV file should have two columns: barcode and title.
+    The barcode column is required and the title column is optional.
+    The repeat parameter is used to repeat the barcodes.
+    The pdf_file parameter is used to specify the output PDF file.
+    The csv_file parameter is used to specify the input CSV file.
+    The repeat parameter is used to repeat the barcodes.
+    The pdf_file parameter is used to specify the output PDF file.
+    """
+    if not os.path.exists(csv_file):
+        print(f"CSV file not found: {csv_file}")
     else:
-        items = read_barcodes(CSV_FILE, 2)
+        items = read_barcodes(csv_file, repeat)
         if not items:
             print("No barcodes found in CSV.")
         else:
-            create_pdf(items)
+            create_pdf(items, pdf_file)
+
+if __name__ == "__main__":
+    gen_barcode_and_pdf(CSV_FILE, OUTPUT_PDF, 2)
+
 

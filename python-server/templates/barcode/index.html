@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Barcode PDF Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body class="w3-container">
+    <div class="w3-container w3-margin-top">
+        <h1 class="w3-center">Barcode PDF Generator</h1>
+        
+        % if show_instructions:
+        <div class="w3-panel w3-blue">
+            <p><strong>Instructions:</strong></p>
+            <ul>
+                <li>Enter tab-separated CSV data in the text area below</li>
+                <li>Format: <code>barcode[TAB]title</code> (one per line)</li>
+                <li>The barcode column is required, title is optional</li>
+                <li>Click "Generate PDF" to create your barcode PDF</li>
+            </ul>
+        </div>
+        % end
+        
+        % if error_message:
+        <div class="w3-panel w3-red">
+            <p><strong>{{error_message}}</strong></p>
+        </div>
+        % end
+        
+        % if success_message:
+        <div class="w3-panel w3-light-green">
+            <p><strong>{{success_message}}</strong></p>
+        </div>
+        % end
+        
+        % form_class = 'w3-container w3-margin-bottom' if pdf_base64 else 'w3-container'
+        % button_text = 'Regenerate PDF' if pdf_base64 else 'Generate PDF'
+        <form method="POST" class="{{form_class}}">
+            <label class="w3-text-blue"><b>Enter Tab-Separated CSV Data:</b></label>
+            <p>Format: barcode[TAB]title (one per line)</p>
+            <textarea name="csv_text" class="w3-input w3-border" rows="10" style="font-family: monospace;" placeholder="1234567890123&#9;Product Name 1&#10;9876543210987&#9;Product Name 2">{{csv_text}}</textarea>
+            <button type="submit" class="w3-button w3-blue w3-margin-top">{{button_text}}</button>
+        </form>
+        
+        % if pdf_base64:
+        <div class="w3-container w3-card-4 w3-margin-top">
+            <div class="w3-container w3-blue">
+                <h3>Generated PDF</h3>
+            </div>
+            <div class="w3-container w3-padding-16" style="background-color: #f1f1f1;">
+                <a href="data:application/pdf;base64,{{!pdf_base64}}" download="barcodes.pdf" class="w3-button w3-green w3-margin-bottom">
+                    <span class="w3-large">⬇ Download PDF</span>
+                </a>
+                <div class="w3-responsive" style="width: 100%; max-width: 100%; overflow-x: auto;">
+                    <iframe src="data:application/pdf;base64,{{!pdf_base64}}" 
+                            style="width: 100%; min-height: 500px; height: 70vh; border: 1px solid #ccc;" 
+                            class="w3-border">
+                        <p>Your browser does not support PDFs. <a href="data:application/pdf;base64,{{!pdf_base64}}" download="barcodes.pdf">Download the PDF</a> instead.</p>
+                    </iframe>
+                </div>
+            </div>
+        </div>
+        % end
+    </div>
+</body>
+</html>
+
